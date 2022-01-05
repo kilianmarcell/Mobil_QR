@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/textViewQRResolution"
+        android:id="@+id/textViewQRResult"
         android:textSize="25sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
