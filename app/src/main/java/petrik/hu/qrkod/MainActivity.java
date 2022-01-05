@@ -4,8 +4,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.MultiTapKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +47,31 @@ public class MainActivity extends AppCompatActivity {
 
                 //Elindítás
                 intentIntegrator.initiateScan();
+            }
+        });
+
+        buttonQRGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String seged = editTextInput.getText().toString();
+                if (seged.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Üres a mező", Toast.LENGTH_SHORT).show();
+                } else {
+                    MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                    try {
+                        //A szöveg amit írtunk átváltoztatjuk bitmátrix-ra
+                        BitMatrix bitMatrix = multiFormatWriter.encode(seged, BarcodeFormat.QR_CODE, 500, 500);
+
+                        //Bitmátrixot nem tudjuk imageView-ba tenni, így át kell alakítani Bitmappá
+                        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                        Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+
+                        //Bitmap kompatibilis az ImageView-val
+                        imageViewOutput.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
